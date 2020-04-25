@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+    db:
+        container_name: product-database
+        image: postgres
+        restart: always
+        env_file:
+            "./envfile"
+        volumes:
+            - "./database:/postgres"
+        ports:
+            - "5432:5432"
+    product:
+        container_name: product-service
+        build: ./product
+        env_file:
+            "./envfile"
+        volumes:
+            - "./product:/service"
+        ports:
+            - "8080:8080"
+        depends_on:
+            - db
+
