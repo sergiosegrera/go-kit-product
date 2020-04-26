@@ -2,22 +2,20 @@ package http
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	httptransport "github.com/go-kit/kit/transport/http"
+
 	"github.com/go-pg/pg/v9"
 	"github.com/sergiosegrera/store/product/db"
 	"github.com/sergiosegrera/store/product/endpoints"
 	"github.com/sergiosegrera/store/product/models"
 	"github.com/sergiosegrera/store/product/service"
+	"github.com/sergiosegrera/store/product/transport/http/handlers"
 )
 
-func Server() {
+func Serve() error {
 	svc := service.Service{}
 	router := chi.NewRouter()
 
@@ -33,27 +31,32 @@ func Server() {
 
 	db, err := db.NewConnection(options)
 	if err != nil {
-		panic(err)
+		return err
 	}
-	// Test
+
+	// Add test data
 	product := models.Product{
 		Name:        "White T-Shirt",
 		Thumbnail:   "https://imgur.com/qEOvdMp",
 		Images:      []string{"https://imgur.com/qEOvdMp", "https://imgur.com/qEOvdMp"},
 		Description: "Plain white T-Shirt",
-		Options: []*models.Option{
-			&models.Option{
-				Name:  "Medium",
-				Stock: 30,
-			},
-		},
-		Price:  30,
-		Public: true,
+		Price:       30,
+		Public:      true,
 	}
 
-	err = db.Insert(&product)
+	result, err := db.Model(&product).Returning("id").Insert()
 	if err != nil {
-		log.Println(err)
+		return err
+	}
+
+	option := models.Option{
+		ProductId: int64(result.RowsReturned()),
+		Name:      "Small",
+		Stock:     30,
+	}
+	err = db.Insert(&option)
+	if err != nil {
+		return err
 	}
 
 	router.Use(func(next http.Handler) http.Handler {
@@ -63,37 +66,11 @@ func Server() {
 		})
 	})
 
-	getProductsHandler := httptransport.NewServer(
-		endpoints.MakeGetProductsEndpoint(svc),
-		decodeGetProductsRequest,
-		encodeResponse,
-	).ServeHTTP
+	getProducts := handlers.MakeGetProductsHandler(endpoints.MakeGetProductsEndpoint(svc))
+	getProduct := handlers.MakeGetProductHandler(endpoints.MakeGetProductEndpoint(svc))
 
-	router.Get("/products", getProductsHandler)
+	router.Get("/products", getProducts)
+	router.Get("/product/{id}", getProduct)
 
-	http.ListenAndServe(":8080", router)
-}
-
-func decodeGetProductsRequest(ctx context.Context, r *http.Request) (interface{}, error) {
-	return nil, nil
-}
-
-func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
-	return json.NewEncoder(w).Encode(response)
-}
-
-//func GetProducts(ept endpoint.Endpoint) func(w http.ResponseWriter, r *http.Request) {
-//
-//	return func(w http.ResponseWriter, r *http.Request) {
-//		resp, err := ept(r.Context(), nil)
-//		if err != nil {
-//			http.Error(w, err.Error(), http.StatusInternalServerError)
-//		}
-//		j, _ := json.Marshal(resp)
-//		w.Write(j)
-//	}
-//}
-
-func main() {
-	fmt.Println("vim-go")
+	return http.ListenAndServe(":8080", router)
 }

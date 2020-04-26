@@ -1,8 +1,12 @@
 # Go-Kit Product
 A little microservice I made to learn go-kit.
 
-The product microservice has a single endpoint that lists products.  
-The endpoint is accessible by doing a get request at `/products`.  
+
+## HTTP Endpoints
+The product microservice has a 2 endpoints that list products.
+
+The `GET /products` endpoint lists all the products.  
+The `GET /product/1` endpoint gives more information about a specific product.
 
 ## Installation
 Install Docker compose first then:
@@ -21,14 +25,15 @@ product/main.go
 product/db/ -- Database initialization, Schema creation
 product/endpoints/ -- Go-kit endpoints including request and response models
 product/models/ -- Business logic data models
-products/service/ -- Business logic
-products/transport/ -- Protocols for interfacing with the endpoints (http, gRPC, ...)
-products/transport/http/ -- HTTP server to interface with endpoints
+product/service/ -- Business logic
+product/transport/ -- Protocols for interfacing with the endpoints (http, gRPC, ...)
+product/transport/http/ -- HTTP server to interface with endpoints
+product/transport/http/handlers/ -- Endpoint wrappers
 ```
 
 ## Procedures to add a new endpoint
 * Create models if needed in `/product/models/`.
 * Add business logic in `product/service/`.
 * Add endpoints in `product/endpoints/`.
-* Add correct handlers for transports in `product/transport/`.
+* Add correct handlers for transports in `product/transport/{type}/handlers/`.
 
