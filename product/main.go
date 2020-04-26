@@ -5,13 +5,57 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/go-pg/pg/v9"
+	"github.com/sergiosegrera/store/product/db"
+	"github.com/sergiosegrera/store/product/models"
 	"github.com/sergiosegrera/store/product/transport/http"
 )
 
 func main() {
+	// Connect to DB
+	options := &pg.Options{
+		Addr:     "db:5432",
+		User:     "product",
+		Database: "product",
+		Password: "verysecuremuchwow",
+	}
+
+	db, err := db.NewConnection(options)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	// Add mock data
+	product := models.Product{
+		Name:        "White T-Shirt",
+		Thumbnail:   "https://imgur.com/qEOvdMp",
+		Images:      []string{"https://imgur.com/qEOvdMp", "https://imgur.com/qEOvdMp"},
+		Description: "Plain white T-Shirt",
+		Price:       30,
+		Public:      true,
+	}
+
+	result, err := db.Model(&product).Returning("id").Insert()
+	if err != nil {
+		panic(err)
+	}
+
+	option := models.Option{
+		ProductId: int64(result.RowsReturned()),
+		Name:      "Small",
+		Stock:     30,
+	}
+
+	err = db.Insert(&option)
+	if err != nil {
+		panic(err)
+	}
+
+	// Start attach db and start http server
 	go func() {
 		log.Println("Started the http server")
-		err := http.Serve()
+		err := http.Serve(db)
 		if err != nil {
 			log.Println("The http server panicked:", err)
 			os.Exit(1)
