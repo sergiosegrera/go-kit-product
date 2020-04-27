@@ -2,9 +2,8 @@ package service
 
 import (
 	"context"
-	"errors"
 
-	"github.com/sergiosegrera/store/product/models"
+	"github.com/sergiosegrera/go-kit-product/product/models"
 
 	"github.com/go-pg/pg/v9"
 )
@@ -14,16 +13,17 @@ type ProductService interface {
 	GetProduct(ctx context.Context, id int64) (*models.Product, error)
 }
 
-type Service struct{}
+type Service struct {
+	db *pg.DB
+}
 
-func (Service) GetProducts(ctx context.Context) ([]*models.Thumbnail, error) {
-	db, exists := ctx.Value("db").(*pg.DB)
-	if !exists {
-		return nil, errors.New("Database not found in context")
-	}
+func NewService(d *pg.DB) *Service {
+	return &Service{db: d}
+}
 
+func (s *Service) GetProducts(ctx context.Context) ([]*models.Thumbnail, error) {
 	var products []models.Product
-	err := db.Model(&products).Where("public = true").Select()
+	err := s.db.Model(&products).Where("public = true").Select()
 	if err != nil {
 		return nil, err
 	}
@@ -41,20 +41,15 @@ func (Service) GetProducts(ctx context.Context) ([]*models.Thumbnail, error) {
 	return thumbnails, err
 }
 
-func (Service) GetProduct(ctx context.Context, id int64) (*models.Product, error) {
-	db, exists := ctx.Value("db").(*pg.DB)
-	if !exists {
-		return nil, errors.New("Database not found in context")
-	}
-
+func (s *Service) GetProduct(ctx context.Context, id int64) (*models.Product, error) {
 	product := &models.Product{Id: id}
-	err := db.Select(product)
+	err := s.db.Select(product)
 	if err != nil {
 		return nil, err
 	}
 
 	var options []*models.Option
-	err = db.Model(&options).Where("product_id = ?", product.Id).Select()
+	err = s.db.Model(&options).Where("product_id = ?", product.Id).Select()
 	if err != nil && err != pg.ErrNoRows {
 		return nil, err
 	}

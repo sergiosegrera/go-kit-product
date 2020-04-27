@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/go-kit/kit/endpoint"
-	"github.com/sergiosegrera/store/product/models"
-	"github.com/sergiosegrera/store/product/service"
+	"github.com/sergiosegrera/go-kit-product/product/models"
+	"github.com/sergiosegrera/go-kit-product/product/service"
 )
 
 type GetProductRequest struct {

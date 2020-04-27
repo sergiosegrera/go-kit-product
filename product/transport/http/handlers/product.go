@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-kit/kit/endpoint"
-	"github.com/sergiosegrera/store/product/endpoints"
+	"github.com/sergiosegrera/store/go-kit-product/endpoints"
 )
 
 func MakeGetProductHandler(e endpoint.Endpoint) func(w http.ResponseWriter, r *http.Request) {
