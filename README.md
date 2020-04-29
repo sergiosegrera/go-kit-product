@@ -39,5 +39,6 @@ product/transport/http/handlers/ -- Endpoint wrappers
 
 ## TODO
 * Finish implementing endpoints for product-manager
+* Request input verification
 * Resolve database models
 * Auth server (gRPC, redis, JWT?)

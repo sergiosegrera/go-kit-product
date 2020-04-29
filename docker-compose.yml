@@ -28,11 +28,24 @@ services:
         container_name: product-service
         build: ./product
         env_file:
-            "./envfile"
+            - "./envfile"
         volumes:
             - "./product:/service"
         ports:
             - "8080:8080"
         depends_on:
             - db
+
+    cart:
+        container_name: cart-service
+        build: ./cart
+        env_file:
+            - "./envfile"
+        volumes:
+            - "./cart:/service"
+        ports:
+            - "8082:8080"
+        depends_on:
+            - db
+
 

@@ -9,7 +9,6 @@ import (
 	"github.com/sergiosegrera/go-kit-product/product-manager/db"
 	"github.com/sergiosegrera/go-kit-product/product-manager/service"
 	"github.com/sergiosegrera/go-kit-product/product-manager/transport/http"
-	"github.com/sergiosegrera/go-kit-product/product/models"
 )
 
 func main() {
@@ -28,30 +27,30 @@ func main() {
 	defer db.Close()
 
 	// Add mock data
-	product := models.Product{
-		Name:        "White T-Shirt",
-		Thumbnail:   "https://imgur.com/qEOvdMp",
-		Images:      []string{"https://imgur.com/qEOvdMp", "https://imgur.com/qEOvdMp"},
-		Description: "Plain white T-Shirt",
-		Price:       30,
-		Public:      true,
-	}
+	// product := models.Product{
+	// 	Name:        "White T-Shirt",
+	// 	Thumbnail:   "https://imgur.com/qEOvdMp",
+	// 	Images:      []string{"https://imgur.com/qEOvdMp", "https://imgur.com/qEOvdMp"},
+	// 	Description: "Plain white T-Shirt",
+	// 	Price:       30,
+	// 	Public:      true,
+	// }
 
-	result, err := db.Model(&product).Returning("id").Insert()
-	if err != nil {
-		panic(err)
-	}
+	// result, err := db.Model(&product).Returning("id").Insert()
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	option := models.Option{
-		ProductId: int64(result.RowsReturned()),
-		Name:      "Small",
-		Stock:     30,
-	}
+	// option := models.Option{
+	// 	ProductId: int64(result.RowsReturned()),
+	// 	Name:      "Small",
+	// 	Stock:     30,
+	// }
 
-	err = db.Insert(&option)
-	if err != nil {
-		panic(err)
-	}
+	// err = db.Insert(&option)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	// Start attach db and start http server
 	go func() {
