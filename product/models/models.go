@@ -17,7 +17,7 @@ type Product struct {
 	Description string    `json:"description"`
 	Options     []*Option `json:"options" pg:"-"`
 	Price       int64     `json:"price"`
-	Public      bool      `json:"-"`
+	Public      bool      `json:"public"`
 	CreatedAt   time.Time `json:"createdAt" pg:"default:now()"`
 }
 

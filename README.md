@@ -32,8 +32,12 @@ product/transport/http/handlers/ -- Endpoint wrappers
 ```
 
 ## Procedures to add a new endpoint
-* Create models if needed in `/product/models/`.
+* Create models if needed in `product/models/`.
 * Add business logic in `product/service/`.
 * Add endpoints in `product/endpoints/`.
 * Add correct handlers for transports in `product/transport/{type}/handlers/`.
 
+## TODO
+* Finish implementing endpoints for product-manager
+* Resolve database models
+* Auth server (gRPC, redis, JWT?)

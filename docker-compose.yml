@@ -11,6 +11,19 @@ services:
             - "./database:/postgres"
         ports:
             - "5432:5432"
+
+    product-manager:
+        container_name: product-manager-service
+        build: ./product-manager
+        env_file:
+            - "./envfile"
+        volumes:
+            - "./product-manager:/service"
+        ports:
+            - "8081:8080"
+        depends_on:
+            - db
+
     product:
         container_name: product-service
         build: ./product
