@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/go-pg/pg/v9"
-	"github.com/sergiosegrera/go-kit-product/product/models"
+	"github.com/sergiosegrera/go-kit-product/product-manager/models"
 )
 
 type ProductManagerService interface {
@@ -13,7 +13,7 @@ type ProductManagerService interface {
 	PostProduct(ctx context.Context, product models.Product) error
 	DeleteProduct(ctx context.Context, id int64) error
 	// TODO: Option management
-	// PostOption(ctx context.Context, option models.Option) error
+	PostOption(ctx context.Context, option models.Option) error
 	// DeleteOption(ctx context.Context, id int64) error
 }
 
@@ -59,12 +59,21 @@ func (s *Service) PostProduct(ctx context.Context, product models.Product) error
 		return err
 	}
 
-	return nil
+	return err
 }
 
 func (s *Service) DeleteProduct(ctx context.Context, id int64) error {
 	product := &models.Product{Id: id}
 	err := s.db.Delete(product)
+
+	return err
+}
+
+func (s *Service) PostOption(ctx context.Context, option models.Option) error {
+	err := s.db.Insert(&option)
+	if err != nil {
+		return err
+	}
 
 	return err
 }

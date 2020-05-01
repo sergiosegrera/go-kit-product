@@ -19,9 +19,13 @@ func Serve(svc *service.Service) error {
 	postProduct := handlers.MakePostProductHandler(endpoints.MakePostProductEndpoint(svc))
 	deleteProduct := handlers.MakeDeleteProductHandler(endpoints.MakeDeleteProductEndpoint(svc))
 
+	postOption := handlers.MakePostOptionHandler(endpoints.MakePostOptionEndpoint(svc))
+
 	router.Get("/products", getProducts)
 	router.Post("/product", postProduct)
 	router.Delete("/product/{id}", deleteProduct)
+
+	router.Post("/option", postOption)
 
 	return http.ListenAndServe(":8080", router)
 }

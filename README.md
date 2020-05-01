@@ -42,3 +42,4 @@ product/transport/http/handlers/ -- Endpoint wrappers
 * Request input verification
 * Resolve database models
 * Auth server (gRPC, redis, JWT?)
+* Easier way to convert models to proto and back?

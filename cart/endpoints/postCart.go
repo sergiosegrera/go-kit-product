@@ -19,7 +19,7 @@ type PostCartResponse struct {
 func MakePostCartEndpoint(svc service.CartService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(PostCartRequest)
-		cart := svc.PostCart(ctx, req.Cart)
+		cart := svc.PostCart(req.Cart)
 		return PostCartResponse{Cart: cart}, nil
 	}
 }

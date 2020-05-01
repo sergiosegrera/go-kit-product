@@ -1,8 +1,6 @@
 package service
 
 import (
-	"context"
-
 	"github.com/go-pg/pg/v9"
 
 	"github.com/sergiosegrera/go-kit-product/cart/models"
@@ -10,7 +8,7 @@ import (
 )
 
 type CartService interface {
-	PostCart(ctx context.Context, cart models.Cart) models.Cart
+	PostCart(cart models.Cart) models.Cart
 }
 
 type Service struct {
@@ -21,7 +19,7 @@ func NewService(d *pg.DB) *Service {
 	return &Service{db: d}
 }
 
-func (s *Service) PostCart(ctx context.Context, cart models.Cart) models.Cart {
+func (s *Service) PostCart(cart models.Cart) models.Cart {
 	// Check every product in cart, check if the stock is available and if the product exists.
 	// Also Calculate price for every product.
 	var outputCart models.Cart

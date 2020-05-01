@@ -8,6 +8,7 @@ import (
 	"github.com/go-pg/pg/v9"
 	"github.com/sergiosegrera/go-kit-product/cart/db"
 	"github.com/sergiosegrera/go-kit-product/cart/service"
+	grpctransport "github.com/sergiosegrera/go-kit-product/cart/transport/grpc"
 	"github.com/sergiosegrera/go-kit-product/cart/transport/http"
 )
 
@@ -32,6 +33,15 @@ func main() {
 		err := http.Serve(service.NewService(db))
 		if err != nil {
 			log.Println("The http server panicked:", err)
+			os.Exit(1)
+		}
+	}()
+
+	go func() {
+		log.Println("Started the gRPC server")
+		err := grpctransport.Serve(service.NewService(db))
+		if err != nil {
+			log.Println("The gRPC server panicked:", err)
 			os.Exit(1)
 		}
 	}()

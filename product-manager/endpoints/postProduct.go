@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-kit/kit/endpoint"
 
+	"github.com/sergiosegrera/go-kit-product/product-manager/models"
 	"github.com/sergiosegrera/go-kit-product/product-manager/service"
-	"github.com/sergiosegrera/go-kit-product/product/models"
 )
 
 type PostProductRequest struct {
